@@ -1,9 +1,10 @@
+import Billing from "@/components/global/billing";
 import React from "react";
 
 type Props = {};
 
 const Page = () => {
-  return <div>page1 </div>;
+  return <Billing />;
 };
 
 export default Page;

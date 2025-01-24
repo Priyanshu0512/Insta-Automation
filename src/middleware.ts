@@ -3,7 +3,6 @@ import {
   clerkMiddleware,
   createRouteMatcher,
 } from "@clerk/nextjs/server";
-import { RouteMatcher } from "next/dist/server/future/route-matchers/route-matcher";
 
 const isprotetedRoute = createRouteMatcher([
   "/dashboard(.*)",

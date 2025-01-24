@@ -20,6 +20,7 @@ const layout = ({ children, params }: Props) => {
        lg:py-5"
       >
         <Navbar slug={params.slug} />
+        {children}
       </div>
     </div>
   );
