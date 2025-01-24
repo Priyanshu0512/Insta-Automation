@@ -1,3 +1,5 @@
+import Navbar from "@/components/global/navbar";
+import Sidebar from "@/components/global/sidebar";
 import React from "react";
 
 type Props = {
@@ -6,7 +8,21 @@ type Props = {
 };
 
 const layout = ({ children, params }: Props) => {
-  return <div className="flex justify-center">{children}</div>;
+  return (
+    <div className="p-3">
+      <Sidebar slug={params.slug} />
+      <div
+        className="flex
+       flex-col
+       overflow-auto
+       lg:ml-[250px]
+       lg:pl-10
+       lg:py-5"
+      >
+        <Navbar slug={params.slug} />
+      </div>
+    </div>
+  );
 };
 
 export default layout;
