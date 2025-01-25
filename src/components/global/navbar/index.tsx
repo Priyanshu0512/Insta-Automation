@@ -14,7 +14,7 @@ import { LogoSmall } from "@/svgs/logo-small";
 import CreatAutomation from "../create-automation";
 import Search from "../search";
 import { Notification } from "./notifications";
-import MainBreadCrumb from "../main-bread-crumb";
+import MainBreadCrumb from "../bread-crumbs/main-bread-crumb";
 
 type Props = {
   slug: string;
@@ -79,7 +79,7 @@ const Navbar = ({ slug }: Props) => {
           <CreatAutomation />
           <Notification />
         </div>
-        <MainBreadCrumb page={page == slug ? "Home" : page} slug={slug} />
+        <MainBreadCrumb page={page === slug ? "Home" : page} slug={slug} />
       </div>
     )
   );

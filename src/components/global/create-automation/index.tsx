@@ -5,7 +5,7 @@ import { AutomationDuoToneWhite } from "@/icons";
 
 type Props = {};
 
-const CreatAutomation = () => {
+const CreateAutomation = () => {
   return (
     <Button
       className="lg-px-10 py-6 bg-gradient-to-br hover:opacity-80 text-white
@@ -19,4 +19,4 @@ const CreatAutomation = () => {
   );
 };
 
-export default CreatAutomation;
+export default CreateAutomation;
