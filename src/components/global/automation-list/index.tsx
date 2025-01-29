@@ -2,18 +2,32 @@
 import { usePath } from "@/hooks/user-nav";
 import { cn, getMonth } from "@/lib/utils";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import { GradientButton } from "../gradient-buttom";
 import { Button } from "@/components/ui/button";
 import { useQueryAutomations } from "@/hooks/use-queries";
 import CreateAutomation from "../create-automation";
 import { useMutationDataState } from "@/hooks/use-mutation-data";
+import { Automation } from "@prisma/client";
 
 const AutomationList = () => {
   const { data } = useQueryAutomations();
 
-  const { latestVariable } = useMutationDataState(["create-automation"]);
-  console.log(latestVariable);
+  const latestVariable = useMutationDataState(["create-automation"]);
+  useEffect(() => {
+    console.log("Latest Variable:", latestVariable);
+  }, [latestVariable]);
+
+  const { pathname } = usePath();
+
+  const optimisticUiData = useMemo(() => {
+    if (latestVariable?.status) {
+      const test = [latestVariable.variables, ...data!.data];
+      console.log(test);
+      return { data: test };
+    }
+    return data || { data: [] };
+  }, [latestVariable, data]);
 
   if (data?.status !== 200 || data.data.length <= 0) {
     return (
@@ -23,14 +37,15 @@ const AutomationList = () => {
       </div>
     );
   }
-  const { pathname } = usePath();
+
   return (
     <div className="flex flex-col gap-y-3">
-      {data.data.map((automation) => (
+      {/* find type of automation */}
+      {optimisticUiData.data!.map((automation: any) => (
         <Link
           href={`${pathname}/${automation.id}`}
           key={automation.id}
-          className="bg-[#1D1D1D] hover:opacity-90 transistion duration-100 rounded-xl p-5 border-[1px] radial--gradient--automations flex border-[#545454]"
+          className="bg-[#1D1D1D] hover:opacity-80 transition duration-100 rounded-xl p-5 border-[1px] radial--gradient--automations flex border-[#545454]"
         >
           <div className="flex flex-col items-start flex-1">
             <h2 className="text-xl font-semibold"> {automation.name}</h2>

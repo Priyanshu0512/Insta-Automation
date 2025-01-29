@@ -18,38 +18,43 @@ export const useMutationData = (
     mutationKey,
     mutationFn,
     onSuccess: (data) => {
-      if (onSuccess) onSuccess();
+      // console.log("Mutation Success:", data);
+      if (onSuccess) {
+        onSuccess();
+      }
       return toast(data?.status === 200 ? "Success" : "Error", {
         description: data.data,
       });
     },
+    onError: (error) => {
+      // console.error("Mutation Error:", error);
+    },
     onSettled: async () => {
-      console.log(`Invalidating query with key: ${queryKey}`);
-      if (queryKey) await client.invalidateQueries({ queryKey: [queryKey] });
+      // console.log("Mutation Settled");
+      await client.invalidateQueries({ queryKey: [queryKey] });
     },
   });
 
+  console.log("Mutation Registered with Key:", mutationKey);
+  // console.log(`mutate ${mutate}`); // Log mutation registration
+
   return { isPending, mutate };
 };
-export const useMutationDataState = (mutationKey: MutationKey) => {
-  console.log("Checking mutation state for key:", mutationKey);
 
+export const useMutationDataState = (mutationKey: MutationKey) => {
   const data = useMutationState({
-    filters: { mutationKey },
-    select: (mutation: { state: { variables: any; status: string } }) => {
-      console.log("Selected mutation state:", mutation.state);
+    filters: { mutationKey, status: "success" }, // Add status filter
+    select: (mutation) => {
+      // console.log("Mutation State:", mutation.state); // Log mutation state
       return {
-        variables: mutation.state.variables as any,
+        variables: mutation.state.variables,
         status: mutation.state.status,
       };
     },
   });
 
-  console.log("Full mutation state data:", data);
+  // console.log("Mutation State Data for Key:", mutationKey, data); // Log the data
 
-  const latestVariable =
-    data && data.length > 0 ? data[data.length - 1] : undefined;
-  console.log("Latest Variable:", latestVariable);
-
-  return { latestVariable };
+  const latestVariable = data[data.length - 1];
+  return latestVariable;
 };
