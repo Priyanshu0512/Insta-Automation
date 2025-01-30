@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { useQueryAutomations } from "@/hooks/use-queries";
 import CreateAutomation from "../create-automation";
 import { useMutationDataState } from "@/hooks/use-mutation-data";
-import { Automation } from "@prisma/client";
 
 const AutomationList = () => {
   const { data } = useQueryAutomations();

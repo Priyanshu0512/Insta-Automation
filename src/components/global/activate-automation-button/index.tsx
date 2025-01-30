@@ -7,7 +7,7 @@ type Props = {};
 
 export const ActivateAutomationButton = () => {
   return (
-    <Button className="lg:px-10 bg-gradient-to-br hover:opacity-80 text-white rounded-full from-[#3352CC] font-medium to-[#1C2D70] ml-2">
+    <Button className="lg:px-10 bg-gradient-to-br hover:opacity-80 text-white rounded-full from-[#3352CC] font-medium to-[#1C2D70] ml-2 ">
       <Loader state={false}>
         <ActiveAutomation />
         <p className="lg:inline hidden">

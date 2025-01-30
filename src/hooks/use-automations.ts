@@ -1,7 +1,6 @@
 import { createAutomations, updateAutomationName } from "@/actions/automations";
 import { useMutationData } from "./use-mutation-data";
 import { useEffect, useRef, useState } from "react";
-import { set } from "date-fns";
 
 export const useCreateAutomation = (id?: string) => {
   const { isPending, mutate } = useMutationData(
@@ -43,7 +42,7 @@ export const useEditAutomation = (automationId: string) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [mutate]);
 
   return {
     edit,
@@ -52,4 +51,8 @@ export const useEditAutomation = (automationId: string) => {
     inputRef,
     isPending,
   };
+};
+
+export const useListener = (id: string) => {
+  const [listener, setListener] = useState<"MESSAGE" | "SMARTAI">("MESSAGE");
 };

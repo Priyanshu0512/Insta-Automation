@@ -2,7 +2,6 @@ import { getAutomationInfo } from "@/actions/automations";
 import { Trigger } from "@/components/global/automations/trigger";
 import { AutomationBreadCrumb } from "@/components/global/bread-crumbs/automation-bread-crumb";
 import { Warning } from "@/icons";
-import { client } from "@/lib/prisma";
 import { PrefetchUserAutomation } from "@/react-query/prefetch";
 import {
   dehydrate,
