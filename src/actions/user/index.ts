@@ -65,7 +65,7 @@ export const onBoardUser = async () => {
 export const onUserInfo = async () => {
   const user = await onCurrentUser();
   try {
-    const profile = findUser(user.id);
+    const profile = await findUser(user.id);
     if (profile) {
       return { status: 200, data: profile };
     }

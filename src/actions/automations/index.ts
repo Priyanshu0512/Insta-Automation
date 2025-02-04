@@ -1,8 +1,15 @@
 "use server";
 
+import { parse } from "path";
 import { onCurrentUser } from "../user";
+import { findUser } from "../user/queries";
 import {
+  addKeyword,
+  addListener,
+  addPosts,
+  addTrigger,
   createAutomation,
+  deleteKeywordQuery,
   findAutomation,
   getAutomations,
   updateAutomation,
@@ -64,5 +71,116 @@ export const updateAutomationName = async (
     return { status: 400, data: "Cannot find the automation." };
   } catch (error) {
     return { status: 500, data: "Something went wrong." };
+  }
+};
+
+export const saveListener = async (
+  automationId: string,
+  listener: "SMARTAI" | "MESSAGE",
+  prompt: string,
+  reply?: string
+) => {
+  await onCurrentUser();
+  try {
+    const create = await addListener(automationId, listener, prompt, reply);
+    if (create) return { status: 200, data: "Listener successfully created." };
+    return { status: 400, data: "Can't save the listener" };
+  } catch (error) {
+    return { status: 500, data: "Something went wrong." };
+  }
+};
+
+export const saveTrigger = async (automationId: string, trigger: string[]) => {
+  await onCurrentUser();
+  try {
+    const create = await addTrigger(automationId, trigger);
+    if (create) return { status: 200, data: "Trigger successfully created." };
+    return { status: 400, data: "Can't create the Trigger" };
+  } catch (error) {
+    return { status: 500, data: "Something went wrong." };
+  }
+};
+
+export const saveKeyword = async (automationId: string, keyword: string) => {
+  await onCurrentUser();
+  try {
+    const create = await addKeyword(automationId, keyword);
+    if (create) {
+      return { status: 200, data: "keyword added successfully" };
+    }
+    return { status: 404, data: "Cannot add this keyword." };
+  } catch (error) {
+    return { status: 500, data: "something went wrong." };
+  }
+};
+
+export const deleteKeyword = async (id: string) => {
+  await onCurrentUser();
+  try {
+    const deleted = await deleteKeywordQuery(id);
+    if (deleted) {
+      return { status: 200, data: "keywords deleted." };
+    }
+    return { status: 404, data: "Keywords not found." };
+  } catch (error) {
+    return { status: 500, data: "something went wrong." };
+  }
+};
+
+export const getProfilePosts = async () => {
+  const user = await onCurrentUser();
+  try {
+    const profile = await findUser(user.id);
+    const posts = await fetch(
+      `${process.env.INSTAGRAM_BASE_URL}/me/media?fields=id,caption,media_url,media_type,timestamp&limit=10&access_token=${profile?.integrations[0].token}`
+    );
+
+    const parsed = await posts.json();
+    if (parsed) {
+      return { status: 200, data: parsed };
+    }
+    return { status: 404, data: "user not found" };
+  } catch (error) {
+    return { status: 500, data: "Something went  wrong." };
+  }
+};
+
+export const savePosts = async (
+  automationId: string,
+  posts: {
+    postid: string;
+    caption?: string;
+    media: string;
+    mediaType: "IMAGE" | "VIDEO" | "CAROSEL_ALBUM";
+  }[]
+) => {
+  await onCurrentUser();
+  try {
+    const create = await addPosts(automationId, posts);
+    if (create) {
+      return { status: 200, data: "Posts Attached." };
+    }
+    return {
+      status: 404,
+      data: "Automation Not found.",
+    };
+  } catch (error) {
+    return { status: 500, data: "something went wrong." };
+  }
+};
+
+export const activateAutomation = async (id: string, state: boolean) => {
+  await onCurrentUser();
+  try {
+    const update = await updateAutomation(id, { active: state });
+    if (update) {
+      return {
+        status: 200,
+        data: `Automation ${state ? "activated" : "disabled"}`,
+      };
+    }
+    return { status: 404, data: "Automation not found." };
+  } catch (error) {
+    return { status: 500, data: "something went wrong." };
   }
 };
