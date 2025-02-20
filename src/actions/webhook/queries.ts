@@ -77,3 +77,59 @@ export const trackResponse = async (
     });
   }
 };
+
+export const createChatHistory = (
+  automationId: string,
+  sender: string,
+  receiver: string,
+  message: string
+) => {
+  return client.automation.update({
+    where: {
+      id: automationId,
+    },
+    data: {
+      dms: {
+        create: {
+          receiver,
+          sender,
+          message,
+        },
+      },
+    },
+  });
+};
+
+export const getKeywordPost = async (postId: string, automationId: string) => {
+  return await client.post.findFirst({
+    where: {
+      AND: [{ postid: postId }, { automationId }],
+    },
+    select: {
+      automationId: true,
+    },
+  });
+};
+
+export const getChatHistory = async (sender: string, receiver: string) => {
+  const history = await client.dms.findMany({
+    where: {
+      AND: [{ sender }, { receiver }],
+    },
+    orderBy: { createdAt: "asc" },
+  });
+  const chatSession: {
+    role: "assistant" | "user";
+    content: string;
+  }[] = history.map((chat) => {
+    return {
+      role: chat.receiver ? "assistant" : "user",
+      content: chat.message!,
+    };
+  });
+
+  return {
+    history: chatSession,
+    automationId: history[history.length - 1].automationId,
+  };
+};
